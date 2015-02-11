@@ -74,3 +74,8 @@ puts "Temp build in #{recipe.path}"
 puts "------> Zipping it up "
 `cd #{recipe.path}; tar cvzf #{ARGV[2]} *`
 
+if $?.exitstatus != 0
+  puts "ERROR: Tar failed to execute"
+  exit 1
+end
+

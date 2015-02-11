@@ -29,6 +29,9 @@ __build() {
 
   echo "-----> Running build in docker"
   vagrant ssh -c "sudo docker run -v /vagrant:/dependency-builder -w /dependency-builder cloudfoundry/lucid64 $target $target_name"
+
+  echo "-----> Uploading compiled binary to S3"
+  bin/gof3r cp out/${target_name}.tgz s3://ruby-buildpack/${target_name}.tgz
 }
 
 __list() {
