@@ -1,6 +1,5 @@
 require "mini_portile"
 
-
 class MiniPortile
  def extract_file(file, target)
     filename = File.basename(file)
@@ -18,14 +17,30 @@ class MiniPortile
   end
 end
 
-recipe = MiniPortile.new("ruby", "1.9.3")
+recipe = MiniPortile.new("ruby", ARGV[0].to_s)
 
-recipe.files = ["http://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz"]
-
+recipe.files = [ARGV[1]]
 recipe.configure_options << "--enable-load-relative"
 recipe.configure_options << "--disable-install-doc"
+recipe.configure_options << "--disable-static"
+recipe.configure_options << "--enable-shared"
 
-recipe.cook
+checkpoint = ".#{recipe.name}-#{recipe.version}.installed"
 
-puts "------> Find the build in #{recipe.path}"
+if File.exist?(checkpoint)
+  puts "INFO: Already compiled"
+else
+  puts "-----> Using config options: "
+  recipe.configure_options.each { |opt| puts "\t#{opt}" }
+  puts
+
+  recipe.cook
+
+  `touch ${checkpoint}`
+end
+
+puts "Temp build in #{recipe.path}"
+
+puts "------> Zipping it up "
+`cd #{recipe.path}; tar cvzf #{ARGV[2]} *`
 

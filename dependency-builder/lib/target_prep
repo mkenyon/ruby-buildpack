@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# WARNING! to be sourced by targets
+
+echo "-----> Configuring env"
+
+export TARGET_NAME=$1
+export DEPENDENCY_BUILDER_DIR=/dependency-builder
+export OUTPUT=$DEPENDENCY_BUILDER_DIR/out/${TARGET_NAME}.tgz
+export TMP_DIR=$DEPENDENCY_BUILDER_DIR/tmp/$TARGET_NAME
+export LIB_DIR=$DEPENDENCY_BUILDER_DIR/lib
+
+mkdir -p $TMP_DIR
+
+mkdir -p $DEPENDENCY_BUILDER_DIR/out 
+rm -f $OUTPUT
