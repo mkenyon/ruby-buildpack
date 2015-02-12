@@ -5,7 +5,7 @@ set -eo pipefail
 source ./lib/target_prep
 
 echo "-----> Install mini_portile"
-gem install mini_portile
+gem install mini_portile --no-ri --no-rdoc
 
 echo "-----> Run builder"
 cd $TMP_DIR
