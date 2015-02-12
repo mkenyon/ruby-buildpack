@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+##################################################
+# Talks are starting (bp <> diego <> runtime)
+# to ensure that the creation of the current rootfs
+# also results in a docker image
+#
+# The current proposal is that rootfs is generated
+# in a docker env, is imaged and pushed to dockerhub
+# and then the blob in cf-release is pulled from
+# there.
+#
+# In the meantime, this script creates something 
+# we can work with.
+#
+# It does not store on dockerhub.
+
+puts <<-USAGE
+Make sure you have ~/workspace/cf-release
+  pointing to the release you want.
+Then run
+  $ bosh sync blobs
+USAGE
+
+target_rootfs=ARGV[0] # e.g. lucid64
+tarname="#{target_rootfs}.tar.gz"
+image_name="cloudfoundry/buildpacks-#{target_rootfs}"
+
+
+puts "-------> Linking rootfs blob"
+
+`
+rm -f ./tmp/#{tarname};
+ln -s $HOME/workspace/cf-release/blobs/rootfs/#{tarname} ./tmp/#{tarname}
+`
+
+if $?.exitstatus != 0
+  puts "Failed to symlink $HOME/workspace/cf-release/blobs/rootfs/#{tarname}"
+  exit 1
+end
+
+puts "-------> Removing previous docker images"
+
+`vagrant ssh -c "
+sudo docker rmi #{image_name} 
+"`
+
+puts "-------> Building docker image from blob"
+
+`vagrant ssh -c "
+cat /vagrant/#{tarname} | sudo docker import - #{image_name}
+"`
+
+if $?.exitstatus != 0
+  puts "Failed to build docker image"
+  exit 1
+end
+
