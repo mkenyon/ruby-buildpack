@@ -4,10 +4,10 @@ set -eo pipefail
 
 source ./lib/target_prep
 
-echo "----> Install mini_portile"
+echo "-----> Install mini_portile"
 gem install mini_portile
 
-echo "----> Run builder"
+echo "-----> Run builder"
 cd $TMP_DIR
 
 ruby $LIB_DIR/ruby_builder.rb \
