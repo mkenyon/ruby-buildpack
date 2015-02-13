@@ -5,18 +5,8 @@ set -eo pipefail
 TARGET_DIR=./targets
 
 __parse_arguments() {
-  command=${1:-''}
-  target_name=$2
-  target="$TARGET_DIR/${2}"
-  command_name=$0
-}
-
-__usage() {
-  echo "Usage:"
-  echo
-  echo "  $command_name build <build-target>"
-  echo "  $command_name list"
-  exit 1
+  target_name=${1:-'__unknown__'}
+  target="$TARGET_DIR/${target_name}"
 }
 
 __ensure_trusty_box() {
@@ -46,20 +36,13 @@ __list() {
 }
 
 __check_usage() {
-  if [ "$command" == "build" ]; then
-    if [ -f $target ]; then
-      __build
-    else
-      echo "ERROR: target definition '$target' not found"
-      __list
-    fi
-  elif [ "$command" == "list" ]; then
-    __list
+  if [ -f $target ]; then
+    __build
   else
-    __usage
+    echo "ERROR: target definition '$target' not found"
+    __list
   fi
 }  
 
 __parse_arguments $@
 __check_usage
-
