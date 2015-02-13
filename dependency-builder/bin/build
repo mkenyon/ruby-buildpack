@@ -28,7 +28,7 @@ __build() {
   __ensure_trusty_box
 
   echo "-----> Running build in docker"
-  vagrant ssh -c "sudo docker run -v /vagrant:/dependency-builder -w /dependency-builder cloudfoundry/buildpacks-lucid64 $target $target_name"
+  vagrant ssh -c "sudo docker run -v /vagrant:/dependency-builder -w /dependency-builder cloudfoundry/lucid64_transitional $target $target_name"
 
   upload_bucket=s3://pivotal-buildpacks
   upload_path=/ruby/binaries/lucid/
