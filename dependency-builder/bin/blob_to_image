@@ -1,37 +1,47 @@
 #!/usr/bin/env ruby
 
 ##################################################
-# Talks are starting (bp <> diego <> runtime)
-# to ensure that the creation of the current rootfs
-# also results in a docker image
+# Runtime team is taking responsibility for having
+# "docker: cloudfoundry/trusty64" match the canon in
+# cf-release.
 #
-# The current proposal is that rootfs is generated
-# in a docker env, is imaged and pushed to dockerhub
-# and then the blob in cf-release is pulled from
-# there.
+# Story: https://www.pivotaltracker.com/story/show/88266942
 #
-# In the meantime, this script creates something 
-# we can work with.
+# The diego team is currently producing non-canon
+# docker images for cloudfoundry/lucid64.
 #
-# It does not store on dockerhub.
-
+# This script let's you produce canons based off of
+# cf-release for either rootfs.
+#
+# 
 puts <<-USAGE
 Make sure you have ~/workspace/cf-release
   pointing to the release you want.
 Then run
   $ bosh sync blobs
+
+Usage:
+  ./bin/blob_to_image [trusty64|lucid64]  # for trusty, you will need to use the trusty cf release branch
+
+ENV Variables:
+  CF_DOCKER_USER        DockerHub Username
+  CF_DOCKER_PASSWORD    DockerHub Password
+  CF_DOCKER_EMAIL       DockerHub Email
+
+Result:
+  A docker image is created at cloudfoundry/<rootfs>_transitional
 USAGE
 
 target_rootfs=ARGV[0] # e.g. lucid64
 tarname="#{target_rootfs}.tar.gz"
-image_name="cloudfoundry/buildpacks-#{target_rootfs}"
+image_name="cloudfoundry/#{target_rootfs}_transitional"
 
 
 puts "-------> Linking rootfs blob"
 
-`
+puts `
 rm -f ./tmp/#{tarname};
-ln -s $HOME/workspace/cf-release/blobs/rootfs/#{tarname} ./tmp/#{tarname}
+cp $HOME/workspace/cf-release/blobs/rootfs/#{tarname} ./tmp/#{tarname}
 `
 
 if $?.exitstatus != 0
@@ -41,18 +51,30 @@ end
 
 puts "-------> Removing previous docker images"
 
-`vagrant ssh -c "
+puts `vagrant ssh -c "
 sudo docker rmi #{image_name} 
 "`
 
 puts "-------> Building docker image from blob"
 
-`vagrant ssh -c "
-cat /vagrant/#{tarname} | sudo docker import - #{image_name}
+puts `vagrant ssh -c "
+cat /vagrant/tmp/#{tarname} | sudo docker import - #{image_name}
 "`
 
 if $?.exitstatus != 0
   puts "Failed to build docker image"
+  exit 1
+end
+
+puts "-------> Pushing docker image"
+
+puts `vagrant ssh -c "
+sudo docker login -u #{ENV['CF_DOCKER_USER']} -p #{ENV['CF_DOCKER_PASSWORD']} -e #{ENV['CF_DOCKER_EMAIL']};
+sudo docker push #{image_name}
+"`
+
+if $?.exitstatus != 0
+  puts "Failed to push docker image"
   exit 1
 end
 
