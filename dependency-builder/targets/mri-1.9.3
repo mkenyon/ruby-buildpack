@@ -10,9 +10,8 @@ gem install mini_portile --no-ri --no-rdoc
 echo "-----> Run builder"
 cd $TMP_DIR
 
-ruby $LIB_DIR/ruby_builder.rb \
+ruby $LIB_DIR/mri_builder.rb \
   1.9.3 \
   "551" \
-  \
   $OUTPUT
 
