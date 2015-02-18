@@ -27,6 +27,7 @@ new_s3_bucket = AWS::S3.new.buckets[bucket]
 ruby_dependencies.each do |dependency|
   tmp_name = "tmp-#{DateTime.now.strftime('%Q')}.tgz"
   `wget -O #{tmp_name} #{dependency['uri']}`
+  next unless $?.to_i.zero?
   new_s3_bucket.objects["#{path}/mri-#{dependency['version']}.tgz"].write(file: tmp_name)
   File.delete(tmp_name)
 end
