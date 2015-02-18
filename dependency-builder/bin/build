@@ -4,9 +4,13 @@ set -eo pipefail
 
 TARGET_DIR=./targets
 
+echo "checkpoint 1"
+
 __parse_arguments() {
   target_name=${1:-'__unknown__'}
   target="$TARGET_DIR/${target_name}"
+  version=${2:-'__unknown__'}
+  patch=${3:-'__unknown__'}
 }
 
 __ensure_trusty_box() {
@@ -17,11 +21,14 @@ __build() {
   echo "-----> Ensuring vagrant Box is up"
   __ensure_trusty_box
 
+  echo "checkpoint 2"
+
+
   echo "-----> Running build in docker"
-  vagrant ssh -c "sudo docker run -v /vagrant:/dependency-builder -w /dependency-builder cloudfoundry/lucid64_transitional $target $target_name"
+  vagrant ssh -c "sudo docker run -v /vagrant:/dependency-builder -w /dependency-builder cloudfoundry/lucid64_transitional $target $version $patch"
 
   upload_bucket=s3://pivotal-buildpacks
-  upload_path=/ruby/binaries/lucid/
+  upload_path=/ruby/owned/binaries/lucid/
   upload_filename=${target_name}.tgz
 
   echo "-----> Uploading compiled binary (${upload_filename}) to S3"

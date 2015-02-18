@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+ruby_versions = [
+  {
+    major_version: '2.2',
+    version: '2.2.0',
+    patch: ''
+  },
+  {
+    major_version: '2.1',
+    version: '2.1.5',
+    patch: ''
+  },
+  {
+    major_version: '2.1',
+    version: '2.1.4',
+    patch: ''
+  },
+  {
+    major_version: '2.1',
+    version: '2.1.3',
+    patch: ''
+  },
+  {
+    major_version: '2.1',
+    version: '2.1.2',
+    patch: ''
+  },
+  {
+    major_version: '2.1',
+    version: '2.1.1',
+    patch: ''
+  },
+  {
+    major_version: '2.1',
+    version: '2.1.0',
+    patch: ''
+  },
+  {
+    major_version: '2.0',
+    version: '2.0.0',
+    patch: '598'
+  },
+  {
+    major_version: '1.9',
+    version: '1.9.3',
+    patch: '551'
+  },
+  {
+    major_version: '1.9',
+    version: '1.9.2',
+    patch: '330'
+  },
+  {
+    major_version: '1.8',
+    version: '1.8.7',
+    patch: '374'
+  }
+]
+
+ruby_versions.each do |dependency|
+  `./bin/build pre-mri-builder #{dependency[:version]} #{dependency[:patch]}`
+end
+

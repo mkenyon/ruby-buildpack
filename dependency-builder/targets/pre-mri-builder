@@ -11,7 +11,7 @@ echo "-----> Run builder"
 cd $TMP_DIR
 
 ruby $LIB_DIR/mri_builder.rb \
-  1.9.3 \
-  "551" \
+  $1 \
+  $2 \
   $OUTPUT
 

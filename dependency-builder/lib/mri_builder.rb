@@ -18,10 +18,16 @@ class MiniPortile
 end
 
 version, patch = ARGV
+major_version = /\d+\.\d+/.match(version)[0]
 
 recipe = MiniPortile.new("ruby", version)
 
-source_uri ="http://cache.ruby-lang.org/pub/ruby/1.9/ruby-#{version}-p#{patch}.tar.gz"
+unless patch == '__unknown__'
+  source_uri ="http://cache.ruby-lang.org/pub/ruby/#{major_version}/ruby-#{version}-p#{patch}.tar.gz"
+else
+  source_uri ="http://cache.ruby-lang.org/pub/ruby/#{major_version}/ruby-#{version}.tar.gz"
+end
+
 recipe.files = [source_uri]
 
 flags_to_remove = %w{
