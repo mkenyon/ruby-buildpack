@@ -52,12 +52,11 @@ recipe.cook
 puts "------> Running Tests"
 
 actual_version = `cd #{recipe.path}; bin/ruby -v`
-expected_version = "#{version}p#{patch}"
-
-unless actual_version.include? expected_version
+patch_level = patch == "__unknown__" ? '' : patch
+if (actual_version =~ /ruby\s#{version}.*(p|patchlevel\s)#{patch_level}/).nil?
   puts "Ruby Version did not match"
   puts "Expected: #{actual_version}"
-  puts "To Include: #{expected_version}"
+  puts "To contain version number: #{version} \nand patch level: #{patch}"
   exit 1
 end
 print "."
@@ -70,13 +69,10 @@ if actual_output != expected_output
   puts "To Equal: #{expected_output}"
   exit 1
 end
-
 print "."
 
 puts "\nTests passed!"
-
 puts "Temp build in #{recipe.path}"
-
 puts "------> Zipping it up "
 `cd #{recipe.path}; tar cvzf #{ARGV[2]} *`
 
