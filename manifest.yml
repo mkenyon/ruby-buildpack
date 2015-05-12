@@ -118,8 +118,8 @@ dependencies:
       - cflinuxfs2
   - name: ruby
     version: 2.2.2
-    uri: https://pivotal-buildpacks.s3.amazonaws.com/ruby/binaries/cflinuxfs2/ruby-2.2.2.tgz
-    md5: 8ef835d5ea5f53aea500b066b419be8a
+    uri: https://s3.amazonaws.com/pivotal-buildpacks/experimental-binaries/ruby/ruby-v2_2_2-linux-x64.tgz
+    md5: e7f38ef411c44e0548738c56da0bece6
     cf_stacks:
       - cflinuxfs2
   - name: ruby
