@@ -102,8 +102,8 @@ dependencies:
       - cflinuxfs2
   - name: jruby
     version: ruby-2.2.2-jruby-9.0.0.0.rc1
-    uri: https://pivotal-buildpacks.s3.amazonaws.com/ruby/binaries/cflinuxfs2/ruby-2.2.2-jruby-9.0.0.0.rc1.tgz
-    md5: a57de6be773924e321ed8cffd5f4b168
+    uri: https://pivotal-buildpacks.s3.amazonaws.com/concourse-binaries/jruby/jruby-9.0.0.0.rc1_ruby-2.2.0-linux-x64.tgz
+    md5: db868d62ddd994cda17aa8cf07d2fe9c
     cf_stacks:
       - cflinuxfs2
 
